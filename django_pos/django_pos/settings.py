@@ -1,13 +1,16 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import pymysql
+from decouple import config
 
+pymysql.install_as_MySQLdb()
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -94,14 +97,22 @@ WSGI_APPLICATION = "django_pos.wsgi.application"
 
 # Database
 
+MYSQL_DB_NAME = config("MYSQL_DB_NAME")
+MYSQL_DB_USER = config("MYSQL_DB_USER")
+MYSQL_DB_PASSWORD = config("MYSQL_DB_PASSWORD")
+MYSQL_DB_HOST = config("MYSQL_DB_HOST")
+MYSQL_DB_PORT = config("MYSQL_DB_PORT")
+USE_MYSQL = config("USE_MYSQL", cast=bool)
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE_NAME"),
-        "USER": os.getenv("DATABASE_USER"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-        "HOST": os.getenv("DATABASE_HOST"),
-        "PORT": os.getenv("DATABASE_PORT"),
+        "ENGINE": "django.db.backends.mysql" if USE_MYSQL else "django.db.backends.sqlite3",
+        "NAME": MYSQL_DB_NAME if USE_MYSQL else BASE_DIR / "db.sqlite3",
+        "USER": MYSQL_DB_USER if USE_MYSQL else None,
+        "PASSWORD": MYSQL_DB_PASSWORD if USE_MYSQL else None,
+        "HOST": MYSQL_DB_HOST if USE_MYSQL else None,
+        "PORT": MYSQL_DB_PORT if USE_MYSQL else None,
+        # "OPTIONS": {"charset": "utf8mb4_general_ci", "use_unicode": True},
     }
 }
 
