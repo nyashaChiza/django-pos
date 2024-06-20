@@ -21,8 +21,8 @@ import os
 
 
 load_dotenv()
-cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
-app = firebase_admin.initialize_app(cred)
+# cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
+# app = firebase_admin.initialize_app(cred)
 
 
 def fetch_packages(request: HttpRequest) -> JsonResponse:

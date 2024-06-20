@@ -13,3 +13,5 @@ psycopg2
 firebase-admin
 intasend-python
 drf-yasg
+crispy-bootstrap5==0.7
+django-crispy-forms==2.0

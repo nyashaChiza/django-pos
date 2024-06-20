@@ -3,14 +3,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 import os
 from dotenv import load_dotenv
-from etims_vscu_wrapper.clients.http_client import HttpClient
-from etims_vscu_wrapper.core.VSCUProtocol.code_data import CodeData
 from pydantic import Json
-
 from etims.utils.server_status import ping
 from .models import EtimsBranch, EtimsNotice, ItemClassCodes
 import datetime
-from etims_vscu_wrapper.core.VSCUProtocol.item_information import ItemInformation
+# from etims_vscu_wrapper.clients.http_client import HttpClient
+# from etims_vscu_wrapper.core.VSCUProtocol.code_data import CodeData
+# from etims_vscu_wrapper.core.VSCUProtocol.item_information import ItemInformation
 
 load_dotenv()
 
@@ -20,7 +19,7 @@ bhf_id = os.getenv("BHF_ID")
 kra_pin = os.getenv("KRA_PIN")
 
 
-http_client = HttpClient(etims_url)
+# http_client = HttpClient(etims_url)
 
 
 @login_required(login_url="/users/login/")

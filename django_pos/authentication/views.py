@@ -3,12 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from authentication.utils import get_all_permissions
 from .forms import SignUpForm
-
+from company.models import Company
+from django.views.generic import TemplateView, CreateView
 
 @login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
@@ -16,6 +18,11 @@ def index(request: HttpRequest) -> HttpResponse:
     users = User.objects.all()
     return render(request, "accounts/index.html", {"users": users})
 
+class UserCreateView(CreateView):
+    model = User
+    template_name = "accounts/create.html"
+    fields = "__all__"    
+    success_url = "/users/"
 
 def request_is_ajax(request: HttpRequest) -> bool:
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
@@ -62,12 +69,16 @@ def profile(request: HttpRequest) -> HttpResponse:
 
 
 def login_view(request: HttpRequest) -> HttpResponse:
+    company = Company.objects.first()
+    
     if request.user.is_authenticated:
+        if not company:
+            return redirect("/company/create/")
         return redirect("/")
     else:
-
         if request.method == "GET":
             return render(request, "accounts/signin.html")
+        
         elif request.method == "POST":
 
             data = json.loads(request.body)
@@ -126,3 +137,6 @@ def register_user(request: HttpRequest) -> HttpResponse:
     else:
         # not allowed
         return JsonResponse({"message": "Invalid request method"}, status=405)
+
+
+        

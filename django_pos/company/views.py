@@ -3,8 +3,25 @@ from django.shortcuts import get_object_or_404, render
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.datastructures import MultiValueDict
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Branch, Company
 from django.views import View
+from django.views.generic import CreateView
+
+
+class CompanyCreateView(CreateView, LoginRequiredMixin):
+    model = Company
+    login_url = '/users/login/'
+    fields = "__all__"
+    template_name = "company/create.html"
+    success_url = "/"
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
 
 
 class CompanyView(View):
